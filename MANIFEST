@@ -2,11 +2,9 @@ MANIFEST
 README
 LICENSE
 Changes
-t/pod-coverage.t
 t/basic.t
 t/pod.t
 Build.PL
 Makefile.PL
 lib/CGI/Application/Plugin/ErrorPage.pm
-t/00.load.t
 META.yml

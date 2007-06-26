@@ -1,8 +1,8 @@
 ---
 name: CGI-Application-Plugin-ErrorPage
-version: 1.00
+version: 1.10
 author: []
-abstract: A sipmle error page plugin for CGI::Application
+abstract: A simple error page plugin for CGI::Application
 license: perl
 resources:
   license: http://dev.perl.org/licenses/
@@ -13,7 +13,7 @@ requires:
 provides:
   CGI::Application::Plugin::ErrorPage:
     file: lib/CGI/Application/Plugin/ErrorPage.pm
-    version: 1.00
+    version: 1.10
 generated_by: Module::Build version 0.2806
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.2.html

@@ -5,7 +5,7 @@ use warnings;
 BEGIN {
     use Exporter ();
     use vars qw($VERSION @ISA @EXPORT @EXPORT_OK %EXPORT_TAGS);
-    $VERSION     = '1.00';
+    $VERSION     = '1.10';
     @ISA         = qw(Exporter);
     #Give a hoot don't pollute, do not export more than needed by default
     @EXPORT      = qw();
@@ -16,7 +16,7 @@ BEGIN {
 
 =head1 NAME
 
-CGI::Application::Plugin::ErrorPage - A sipmle error page plugin for CGI::Application
+CGI::Application::Plugin::ErrorPage - A simple error page plugin for CGI::Application
 
 =head1 SYNOPSIS
 
@@ -49,6 +49,16 @@ You are encouraged to provide a template file so that the error messages can
 be presented with a design consistent with the rest of your application. 
 
 A simple design is provided below to get to you started. 
+
+=head2 A better default error page. 
+
+If you don't install an AUTOLOAD run mode in the normal way in C<< setup >>, this plugin
+will automatically install a reasonable default at the C<< prerun >> stage, which returns an error page like this:
+
+  return $c->error(
+      title => 'The requested page was not found.',
+      msg => "(The page tried was: ".$c->get_current_runmode.")"
+  );
 
 =head2 error()
 
@@ -83,6 +93,32 @@ on the C<path> option for more detail.
 
 =cut 
 
+sub import {
+    my $caller = scalar(caller);
+    $caller->add_callback('prerun', \&add_page_not_found_rm);
+    goto &Exporter::import;
+}
+
+sub add_page_not_found_rm {
+    my $c = shift;
+
+     my %rms = $c->run_modes;
+
+     unless( exists $rms{'AUTOLOAD'}) {
+         $c->run_modes(
+             AUTOLOAD => sub {
+                 return $c->error(
+                     title => 'The requested page was not found.',
+                     msg => "(The page tried was: ".$c->get_current_runmode.")"
+                 )
+         });
+     }
+}
+
+
+
+
+
 use Params::Validate ':all';
 sub error {
     my $c = shift;
@@ -111,6 +147,9 @@ sub error {
     return $t->output;
 }
 
+
+
+
 =head2 Example error.html
 
 Here's a very basic example of an C<error.html> file to get you started.
@@ -120,12 +159,12 @@ Here's a very basic example of an C<error.html> file to get you started.
           "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
  <html xmlns="http://www.w3.org/1999/xhtml" lang="en-US" xml:lang="en-US">
  <head>
- <title><!-- tmpl_var title --></title>
+ <title><!-- tmpl_var title escape=HTML --></title>
  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
  </head>
  <body>
- <h1><!-- tmpl_var title --></h1>
- <p><!-- tmpl_var msg --></p>
+ <h1><!-- tmpl_var title escape=HTML--></h1>
+ <p><!-- tmpl_var msg escape=HTML --></p>
  </body>
  </html>
 

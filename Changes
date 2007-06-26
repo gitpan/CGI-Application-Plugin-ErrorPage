@@ -1,6 +1,11 @@
 Revision history for Perl module CGI::Application::Plugin::ErrorPage
 
-0.01 Sat Jun 23 13:44:01 2007
+1.10 Tue Jun 26 00:10:20 EDT 2007
+
+    - install a default error page into AUTOLOAD if no AUTOLOAD page is already defined.  
+    - Add escape=HTML to template example
+
+1.00 Sat Jun 23 13:44:01 2007
     - original version; created by ExtUtils::ModuleMaker 0.47
 
 
