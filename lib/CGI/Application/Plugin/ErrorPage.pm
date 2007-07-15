@@ -3,14 +3,10 @@ use strict;
 use warnings;
 
 BEGIN {
-    use Exporter ();
-    use vars qw($VERSION @ISA @EXPORT @EXPORT_OK %EXPORT_TAGS);
-    $VERSION     = '1.10';
-    @ISA         = qw(Exporter);
-    #Give a hoot don't pollute, do not export more than needed by default
-    @EXPORT      = qw();
+    use base 'Exporter';
+    use vars qw($VERSION @EXPORT_OK);
+    $VERSION     = '1.12';
     @EXPORT_OK   = 'error';
-    %EXPORT_TAGS = ();
 }
 
 
@@ -20,7 +16,7 @@ CGI::Application::Plugin::ErrorPage - A simple error page plugin for CGI::Applic
 
 =head1 SYNOPSIS
 
-  use CGI::Application::Plugin::ErrorPage;
+  use CGI::Application::Plugin::ErrorPage 'error';
 
   sub my_run_mode {
     my $self = shift;
@@ -60,6 +56,30 @@ will automatically install a reasonable default at the C<< prerun >> stage, whic
       msg => "(The page tried was: ".$c->get_current_runmode.")"
   );
 
+=head2 Relation to error_mode()
+
+CGI::Application includes C<error_mode()> to provide custom handling when the application dies.
+This error() routine provides a shortcut for displaying error messages to the user. So, they both have a
+place on their own, and it could make sense to use them together. In your 'error_mode' routine, you might
+call error() to return a message to the user:
+
+    $self->error( title => 'Technical Failure', msg => 'There was a technical failure' );
+
+=head2 Suggested Uses
+
+Some common cases for returning error messages to the user include:
+
+  * "Technical Failure" - The software failed unexpectedly  
+  * "Insufficient Information" - some required query parameter was missing 
+  * "Request Not Understood" - Some value we received in the query just didn't make sense. 
+
+=head2 Silliness
+
+  [22:36] <rjbs> Techno Failure.  We were cruising along and rocking out while fulfilling your request, but then the music stopped and we sort of got distracted.
+  [22:36] <rjbs> Tek Failure.  Too busy reading Shatner novels to respond to your request.
+
+=head1 METHODS
+
 =head2 error()
 
         return $self->error(
@@ -77,6 +97,9 @@ It tries to load a template file named 'error.html' to display the error page.
 If you want to use a different location, I recommend putting something like this in your base class,
 so you only have to provide your error template location once. 
 
+
+ # In this case, intentionally *don't* import 'error' to avoid a "redefined" warning.
+ use CGI::Application::Plugin::ErrorPage;
  sub error {
       my $c = shift;
       return $c->CGI::Application::Plugin::ErrorPage::error(

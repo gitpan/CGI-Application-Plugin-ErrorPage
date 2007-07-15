@@ -4,6 +4,7 @@ package foo;
 use base CGI::Application;
 use CGI::Application::Plugin::ErrorPage 'error';
 
+no warnings 'redefine';
 sub error {
      my $c = shift;
      return $c->CGI::Application::Plugin::ErrorPage::error(
