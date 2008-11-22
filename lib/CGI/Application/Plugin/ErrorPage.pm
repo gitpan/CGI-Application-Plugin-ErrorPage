@@ -5,7 +5,7 @@ use warnings;
 BEGIN {
     use base 'Exporter';
     use vars qw($VERSION @EXPORT_OK);
-    $VERSION     = '1.12';
+    $VERSION     = '1.20';
     @EXPORT_OK   = 'error';
 }
 
@@ -130,9 +130,10 @@ sub add_page_not_found_rm {
      unless( exists $rms{'AUTOLOAD'}) {
          $c->run_modes(
              AUTOLOAD => sub {
-                 return $c->error(
+                 my $self = shift;
+                 return $self->error(
                      title => 'The requested page was not found.',
-                     msg => "(The page tried was: ".$c->get_current_runmode.")"
+                     msg => "(The page tried was: ".$self->get_current_runmode.")"
                  )
          });
      }
