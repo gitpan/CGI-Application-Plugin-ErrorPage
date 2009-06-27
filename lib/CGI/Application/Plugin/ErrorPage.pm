@@ -4,9 +4,8 @@ use warnings;
 
 BEGIN {
     use base 'Exporter';
-    use vars qw($VERSION @EXPORT_OK);
-    $VERSION     = '1.20';
-    @EXPORT_OK   = 'error';
+    our $VERSION     = '1.21';
+    our @EXPORT_OK   = 'error';
 }
 
 
@@ -103,16 +102,30 @@ so you only have to provide your error template location once.
  sub error {
       my $c = shift;
       return $c->CGI::Application::Plugin::ErrorPage::error(
-          tmpl => '/path/to/my/alternate/error/file.html',
+          tmpl => $self->cfg('ROOT_URI').'/path/to/my/alternate/error/file.html',
           @_,
       );
  }
 
-This module intentionally ignores any <tmpl_path()> set by application,
-since this is usually an indication of where the intended file is located, not
-the error template.  You can still affect the path where L<HTML::Template>
-looks by setting C<$ENV{HTML_TEMPLATE_ROOT}>. See the L<HTML::Template> docs
-on the C<path> option for more detail.
+This module intentionally ignores any C<tmpl_path()> set by application, since
+this is usually an indication of where the intended file is located, not the
+error template.  This exceptional handling of the C<tmpl_path()> is one of the
+only value added bits of logic that this plugin adds. The rest of it is
+primarily a simple recommendation for error page handling wrapped up as a
+module.
+
+If you don't want this behavior, it's simple enough just to roll your own error() page method
+and skip using this plugin. Here's the simple essential code:
+
+    use Params::Validate ':all';
+    sub error {
+        my $self  = shift;
+        my %p = validate(@_, { title => SCALAR, msg => SCALAR });
+        my $t = $self->load_tmpl;
+        $t->param( title => $p{title}, msg => $p{msg} );
+        return $t->output;
+    }
+
 
 =cut 
 

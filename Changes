@@ -1,5 +1,10 @@
 Revision history for Perl module CGI::Application::Plugin::ErrorPage
 
+1.21 Fri Jun 26 20:48:56 EDT 2009
+   No code changes.
+   - Clarify docs on why we ignore tmpl_path() and what you can do about it.
+     (Thanks to Jaldhar Vyas for feedback on this).
+
 1.20 Fri Nov 21 20:46:59 EST 2008
     - Bug fix: AUTOLOADed error page no longer creates a circular reference. 
         (RT#41130, Thanks to Bradley Bailey). 
